@@ -20,8 +20,14 @@ namespace Client
                 {
                     Console.WriteLine("Введите текст: ");
                     string mes = Console.ReadLine();
-                    var buffer = Encoding.Unicode.GetBytes(mes);
-                    socket.Send(buffer);
+                        var buffer = Encoding.Unicode.GetBytes(mes);
+                        socket.Send(buffer);
+                    if (mes.Equals("end"))
+                    {
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                        Environment.Exit(0);
+                    }
                 }
             }
             catch { }

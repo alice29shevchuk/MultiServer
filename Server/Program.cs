@@ -26,13 +26,22 @@ namespace Server
                     int byteCount = 0;
                     byte[] buffer = new byte[256];
                     StringBuilder stringBuilder = new StringBuilder();
-                    do
+                        do
+                        {
+                            byteCount = clientSocket.Receive(buffer);
+                            stringBuilder.Append(Encoding.Unicode.GetString(buffer, 0, byteCount));
+                        } while (clientSocket.Available > 0);
+                    string msg = stringBuilder.ToString();
+                    if (msg == "end")
                     {
-                        byteCount = clientSocket.Receive(buffer);
-                        stringBuilder.Append(Encoding.Unicode.GetString(buffer, 0, byteCount));
-                    } while (clientSocket.Available > 0);
-
-                    Console.WriteLine($"Client msg:\t{stringBuilder.ToString()}");
+                        clientSocket.Shutdown(SocketShutdown.Send);
+                        clientSocket.Close();
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"New msg:\t{stringBuilder.ToString()}");
+                    }
                 }
 
             }
